@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Watzmann Tour 2026</title>
+  <title>Watzmann Tour</title>
 
   <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
 
-  <!-- Leaflet -->
+  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 
@@ -22,13 +21,30 @@
 <div id="map"></div>
 
 <div class="controls">
-  <button onclick="showLocation()">📍 Mein Standort</button>
   <button onclick="showDay(1)">Tag 1</button>
   <button onclick="showDay(2)">Tag 2</button>
   <button onclick="showDay(3)">Tag 3</button>
+  <button onclick="showLocation()">📍 Ich</button>
 </div>
 
 <div id="info"></div>
+
+<div id="packliste">
+  <h2>🎒 Packliste</h2>
+
+  <div class="person">
+    <h3>Oliver</h3>
+    <ul id="list-oliver"></ul>
+  </div>
+
+  <div class="person">
+    <h3>Martin</h3>
+    <ul id="list-martin"></ul>
+  </div>
+
+  <input id="newItem" placeholder="Neuer Gegenstand">
+  <button onclick="addItem()">Hinzufügen</button>
+</div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="app.js"></script>
