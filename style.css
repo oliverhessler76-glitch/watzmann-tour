@@ -32,11 +32,27 @@ button {
   color: white;
 }
 
-button:active {
-  background: #2563eb;
-}
-
 #info {
   padding: 15px;
   line-height: 1.5;
+}
+
+#packliste {
+  padding: 15px;
+  background: #020617;
+}
+
+.person {
+  margin-bottom: 15px;
+}
+
+li {
+  list-style: none;
+}
+
+input {
+  width: 70%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
 }
