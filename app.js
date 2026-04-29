@@ -1,67 +1,119 @@
-let map = L.map('map').setView([47.555, 12.925], 13);
+let map = L.map('map').setView([47.55, 12.92], 13);
 
-// Satellitenkarte
+// Satellit
 L.tileLayer(
   'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
   { maxZoom: 18 }
 ).addTo(map);
 
-// Marker
+// Start / Hütten
+const start = [47.558, 12.906];
 const watzmannhaus = [47.561, 12.921];
 const wimbach = [47.567, 12.890];
-const start = [47.558, 12.906];
 
-L.marker(start).addTo(map).bindPopup("Start Wimbachbrücke");
+L.marker(start).addTo(map).bindPopup("Wimbachbrücke");
 L.marker(watzmannhaus).addTo(map).bindPopup("Watzmannhaus");
 L.marker(wimbach).addTo(map).bindPopup("Wimbachgrieshütte");
 
-// Live Standort
+// ROUTEN
+let routeLayer;
+
+const routes = {
+  1: [
+    [47.558, 12.906],
+    [47.565, 12.910],
+    [47.561, 12.921]
+  ],
+  2: [
+    [47.561, 12.921],
+    [47.570, 12.905],
+    [47.567, 12.890]
+  ],
+  3: [
+    [47.567, 12.890],
+    [47.558, 12.906]
+  ]
+};
+
+function showDay(day) {
+  if (routeLayer) map.removeLayer(routeLayer);
+
+  routeLayer = L.polyline(routes[day], {
+    color: 'yellow',
+    weight: 4
+  }).addTo(map);
+
+  map.fitBounds(routeLayer.getBounds());
+
+  const info = document.getElementById("info");
+
+  if (day === 1) {
+    info.innerHTML = "<h2>Tag 1</h2>Wimbachbrücke → Watzmannhaus<br>⛰️ +1300m";
+  }
+  if (day === 2) {
+    info.innerHTML = "<h2>Tag 2</h2>Watzmannhaus → Wimbachgrieshütte";
+  }
+  if (day === 3) {
+    info.innerHTML = "<h2>Tag 3</h2>Abstieg ins Tal";
+  }
+}
+
+// Standort
 function showLocation() {
   navigator.geolocation.getCurrentPosition(pos => {
-    let user = [pos.coords.latitude, pos.coords.longitude];
+    const user = [pos.coords.latitude, pos.coords.longitude];
     L.marker(user).addTo(map).bindPopup("Du bist hier");
     map.setView(user, 14);
   });
 }
 
-// Tagesinfos
-function showDay(day) {
-  let info = document.getElementById("info");
+// HÜTTEN
+function showHut(name) {
+  const info = document.getElementById("info");
 
-  if (day === 1) {
-    info.innerHTML = `
-    <h2>Tag 1: Wimbachbrücke → Watzmannhaus</h2>
-    ⏱️ Dauer: 4–5h<br>
-    ⛰️ Höhenmeter: +1300m<br><br>
+  const huts = {
+    watzmann: `
+      <h2>Watzmannhaus</h2>
+      🕒 Mai–Oktober<br>
+      🍽️ Kaiserschmarrn, Suppe, Brotzeit
+    `,
+    wimbach: `
+      <h2>Wimbachgrieshütte</h2>
+      🕒 Saisonbetrieb<br>
+      🍽️ Knödel, Suppe, Kuchen
+    `
+  };
 
-    🍽️ Hütten:
-    <button>Grünsteinhütte</button>
-    <button>Kührointalm</button>
-
-    <p>Steiler Aufstieg, tolle Aussicht auf Königssee.</p>
-    `;
-  }
-
-  if (day === 2) {
-    info.innerHTML = `
-    <h2>Tag 2: Watzmannhaus → Wimbachgrieshütte</h2>
-    ⏱️ Dauer: 6–7h<br>
-    ⛰️ Höhenmeter: +400m / -1200m<br><br>
-
-    🍽️ Hütten:
-    <button>Trischübel</button>
-
-    <p>Alpine Querung mit spektakulären Ausblicken.</p>
-    `;
-  }
-
-  if (day === 3) {
-    info.innerHTML = `
-    <h2>Tag 3: Abstieg</h2>
-    ⏱️ Dauer: 2–3h<br>
-    ⛰️ Höhenmeter: -400m<br>
-
-    <p>Entspannter Rückweg durchs Wimbachtal.</p>
-    `;
-  }
+  info.innerHTML = huts[name];
 }
+
+// PACKLISTE
+const items = [
+  "Wanderstöcke",
+  "Socken",
+  "Regenjacke",
+  "Wasser",
+  "Snacks",
+  "Erste Hilfe",
+  "Flipflops"
+];
+
+function loadList() {
+  const o = document.getElementById("list-oliver");
+  const m = document.getElementById("list-martin");
+
+  items.forEach(i => {
+    o.innerHTML += `<li><input type='checkbox'> ${i}</li>`;
+    m.innerHTML += `<li><input type='checkbox'> ${i}</li>`;
+  });
+}
+
+function addItem() {
+  const val = document.getElementById("newItem").value;
+  if (!val) return;
+
+  document.getElementById("list-oliver").innerHTML += `<li><input type='checkbox'> ${val}</li>`;
+  document.getElementById("list-martin").innerHTML += `<li><input type='checkbox'> ${val}</li>`;
+}
+
+window.onload = loadList;
